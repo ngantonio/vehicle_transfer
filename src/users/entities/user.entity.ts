@@ -5,24 +5,27 @@ import {
   CreateDateColumn,
   JoinTable,
   ManyToMany,
+  BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
+import { hash } from 'bcryptjs';
 
 import { Project } from '../../projects/entities/project.entity';
 import { OrganizationalUnit } from '../../organizational_units/entities/organizational_unit.entity';
 import { Role } from '../../roles/entities/role.entity';
 
-@Entity()
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: true, length: 50 })
+  @Column({ length: 50 })
   username: string;
 
-  @Column({ nullable: true, length: 50 })
+  @Column({ length: 50 })
   email: string;
 
-  @Column({ nullable: true, length: 100 })
+  @Column({ length: 100 })
   password: string;
 
   @CreateDateColumn()
@@ -66,4 +69,11 @@ export class User {
     },
   })
   organizational_units: OrganizationalUnit[];
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  async hashPassword() {
+    if (!this.password) return;
+    this.password = await hash(this.password, 10);
+  }
 }

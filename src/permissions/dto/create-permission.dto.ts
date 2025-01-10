@@ -1,6 +1,12 @@
-import { IsString, IsNotEmpty, IsEnum, IsInt } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsEnum,
+  IsInt,
+  IsOptional,
+} from 'class-validator';
 import { TransferModulePermissions } from '../../utils/enums';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreatePermissionDto {
   @IsString()
@@ -25,10 +31,11 @@ export class CreatePermissionDto {
   description: string;
 
   @IsInt()
-  @ApiProperty({
+  @IsOptional()
+  @ApiPropertyOptional({
     type: Number,
     description: 'The role Id',
-    required: true,
+    required: false,
   })
-  role_id: number;
+  role_id?: number;
 }

@@ -1,26 +1,112 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { OrganizationalUnit } from '../organizational_units/entities/organizational_unit.entity';
+import { Project } from './entities/project.entity';
+import { Repository } from 'typeorm';
+import { User } from '../entity/User';
 
 @Injectable()
 export class ProjectsService {
-  create(createProjectDto: CreateProjectDto) {
-    return 'This action adds a new project';
+  constructor(
+    @InjectRepository(OrganizationalUnit)
+    private readonly OURepository: Repository<OrganizationalUnit>,
+    @InjectRepository(Project)
+    private readonly projectRepository: Repository<Project>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
+  async create(createProjectDto: CreateProjectDto) {
+    const { name, description, users, organizational_units } = createProjectDto;
+
+    const project = new Project();
+    project.name = name;
+    project.description = description;
+
+    if (users) {
+      const verified_users = [];
+      for (let i = 0; i < users.length; i++) {
+        const user = await this.userRepository.findOne({
+          where: {
+            id: users[i],
+          },
+        });
+        if (user) verified_users.push(user);
+      }
+      project.users = verified_users;
+    }
+
+    if (organizational_units) {
+      const verified_ou = [];
+      for (let i = 0; i < verified_ou.length; i++) {
+        const OU = await this.OURepository.findOne({
+          where: {
+            id: organizational_units[i],
+          },
+        });
+        if (OU) verified_ou.push(OU);
+      }
+      project.organizational_units = verified_ou;
+    }
+
+    return await this.projectRepository.save(project);
   }
 
-  findAll() {
-    return `This action returns all projects`;
+  async findAll() {
+    return await this.projectRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} project`;
+  async findOne(id: number) {
+    const project = await this.projectRepository.findOne({
+      where: { id: id },
+    });
+
+    if (!project) throw new NotFoundException('Project not found');
+    return project;
   }
 
-  update(id: number, updateProjectDto: UpdateProjectDto) {
-    return `This action updates a #${id} project`;
+  async update(id: number, updateProjectDto: UpdateProjectDto) {
+    const { name, description, users, organizational_units } = updateProjectDto;
+
+    const project = await this.findOne(id);
+
+    if (!project) throw new NotFoundException('Project not found');
+
+    project.name = name;
+    project.description = description;
+
+    if (users) {
+      const verified_users = [];
+      for (let i = 0; i < users.length; i++) {
+        const user = await this.userRepository.findOne({
+          where: {
+            id: users[i],
+          },
+        });
+        if (user) verified_users.push(user);
+      }
+      project.users = verified_users;
+    }
+
+    if (organizational_units) {
+      const verified_ou = [];
+      for (let i = 0; i < verified_ou.length; i++) {
+        const OU = await this.OURepository.findOne({
+          where: {
+            id: organizational_units[i],
+          },
+        });
+        if (OU) verified_ou.push(OU);
+      }
+      project.organizational_units = verified_ou;
+    }
+
+    return await this.projectRepository.save(project);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} project`;
+  async remove(id: number) {
+    const project = await this.findOne(id);
+    return await this.projectRepository.remove(project);
   }
 }

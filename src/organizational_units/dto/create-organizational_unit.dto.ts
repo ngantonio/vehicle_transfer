@@ -25,5 +25,5 @@ export class CreateOrganizationalUnitDto {
     description: 'Associated project id',
     required: true,
   })
-  project: number;
+  project_id: number;
 }

@@ -3,9 +3,15 @@ import { OrganizationalUnitsService } from './organizational_units.service';
 import { OrganizationalUnitsController } from './organizational_units.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrganizationalUnit } from './entities/organizational_unit.entity';
+import { Project } from '../projects/entities/project.entity';
+import { User } from '../entity/User';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([OrganizationalUnit])],
+  imports: [
+    TypeOrmModule.forFeature([OrganizationalUnit]),
+    TypeOrmModule.forFeature([Project]),
+    TypeOrmModule.forFeature([User]),
+  ],
   controllers: [OrganizationalUnitsController],
   providers: [OrganizationalUnitsService],
 })

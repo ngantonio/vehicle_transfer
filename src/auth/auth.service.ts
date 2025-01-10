@@ -1,26 +1,77 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import {
+  BadRequestException,
+  HttpException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { UsersService } from '../users/users.service';
+import { RegisterDto } from './dto/register.dto';
+import { JwtService } from '@nestjs/jwt';
+import * as bcryptjs from 'bcryptjs';
+import { LoginDto } from './dto/login.dto';
+import { Role } from '../utils/enums';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+  ) {}
+
+  async register(registerDto: RegisterDto) {
+    try {
+      const { user, role } = await this.usersService.create(registerDto);
+
+      const payload = {
+        email: user.email,
+        username: user.username,
+        role: role[0].name,
+        permissions: role[0].permissions,
+      };
+      const token = await this.jwtService.signAsync(payload);
+      return {
+        user,
+        token,
+      };
+    } catch (error) {
+      return error;
+    }
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  async login({ email, password }: LoginDto) {
+    try {
+      const user = await this.usersService.findByEmail(email);
+      if (!user) {
+        throw new UnauthorizedException('Invalid credentials');
+      }
+
+      if (user.roles[0].name === Role.USER)
+        throw new UnauthorizedException('Unauthorized');
+
+      console.log(user);
+
+      const isPasswordValid = await bcryptjs.compare(password, user.password);
+      if (!isPasswordValid)
+        throw new UnauthorizedException('Invalid credentials');
+
+      const payload = {
+        email: user.email,
+        username: user.username,
+        role: user.roles[0].name,
+        permissions: user.roles[0].permissions,
+      };
+      const token = await this.jwtService.signAsync(payload);
+
+      return {
+        user,
+        token,
+      };
+    } catch (error) {
+      return error;
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
-  }
+  /*async profile({ email, role }: { email: string; role: string }) {
+    return await this.usersService.findOneByEmail(email);
+  }*/
 }

@@ -1,19 +1,27 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsOptional, IsEnum } from 'class-validator';
-import { Roles } from '../../utils/enums';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsEnum,
+  ValidateNested,
+} from 'class-validator';
+import { Role } from '../../utils/enums';
+import { CreatePermissionDto } from '../../permissions/dto/create-permission.dto';
+import { Type } from 'class-transformer';
 
 export class CreateRoleDto {
-  @IsString()
-  @IsEnum(Roles, {
-    message: 'role name must be RoleEnum',
-  })
-  @IsNotEmpty()
   @ApiProperty({
     description: 'Role name',
     maxLength: 50,
     required: true,
+    enum: Role,
   })
-  name: Roles;
+  @IsEnum(Role, {
+    message: 'role name must be RoleEnum',
+  })
+  @IsNotEmpty()
+  name: string;
 
   @IsString()
   @IsNotEmpty()
@@ -24,11 +32,12 @@ export class CreateRoleDto {
   })
   description: string;
 
-  @IsOptional()
-  @ApiPropertyOptional({
-    type: Array<number>,
-    description: "Associated permissions id's",
-    required: false,
+  @ValidateNested()
+  @Type(() => CreatePermissionDto)
+  @ApiProperty({
+    type: Array<CreatePermissionDto>,
+    description: 'Permissions object',
+    required: true,
   })
-  permissions_id?: Array<number>;
+  permissions?: Array<CreatePermissionDto>;
 }

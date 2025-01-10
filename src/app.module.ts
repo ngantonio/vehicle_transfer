@@ -16,6 +16,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   imports: [
     ConfigModule.forRoot({
       envFilePath: `.env`,
+      isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -31,8 +32,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       }),
       inject: [ConfigService],
     }),
-    VehiclesModule,
     UsersModule,
+    VehiclesModule,
     PermissionsModule,
     TransfersModule,
     OrganizationalUnitsModule,
