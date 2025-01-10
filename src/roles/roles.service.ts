@@ -63,6 +63,13 @@ export class RolesService {
     });
   }
 
+  async findOneByName(name: string) {
+    return await this.roleRepository.find({
+      relations: ['permissions'],
+      where: { name: name },
+    });
+  }
+
   async update(id: number, updateRoleDto: UpdateRoleDto) {
     const role = await this.findOne(id);
     const updatedRole = Object.assign(role, updateRoleDto);

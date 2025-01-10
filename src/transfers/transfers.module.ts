@@ -3,9 +3,10 @@ import { TransfersService } from './transfers.service';
 import { TransfersController } from './transfers.controller';
 import { Transfer } from './entities/transfer.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RolesModule } from '../roles/roles.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Transfer])],
+  imports: [RolesModule, TypeOrmModule.forFeature([Transfer])],
   controllers: [TransfersController],
   providers: [TransfersService],
 })

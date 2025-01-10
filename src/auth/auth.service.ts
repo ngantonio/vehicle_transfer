@@ -23,10 +23,10 @@ export class AuthService {
       const { user, role } = await this.usersService.create(registerDto);
 
       const payload = {
+        id: user.id,
         email: user.email,
         username: user.username,
         role: role[0].name,
-        permissions: role[0].permissions,
       };
       const token = await this.jwtService.signAsync(payload);
       return {
@@ -45,20 +45,18 @@ export class AuthService {
         throw new UnauthorizedException('Invalid credentials');
       }
 
-      if (user.roles[0].name === Role.USER)
-        throw new UnauthorizedException('Unauthorized');
-
-      console.log(user);
+      /*if (user.roles[0].name === Role.USER)
+        throw new UnauthorizedException('Unauthorized');*/
 
       const isPasswordValid = await bcryptjs.compare(password, user.password);
       if (!isPasswordValid)
         throw new UnauthorizedException('Invalid credentials');
 
       const payload = {
+        id: user.id,
         email: user.email,
         username: user.username,
         role: user.roles[0].name,
-        permissions: user.roles[0].permissions,
       };
       const token = await this.jwtService.signAsync(payload);
 
@@ -71,7 +69,7 @@ export class AuthService {
     }
   }
 
-  /*async profile({ email, role }: { email: string; role: string }) {
-    return await this.usersService.findOneByEmail(email);
-  }*/
+  async profile({ email, role }: { email: string; role: string }) {
+    return await this.usersService.findByEmail(email);
+  }
 }

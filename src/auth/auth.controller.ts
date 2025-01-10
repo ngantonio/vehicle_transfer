@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { Request } from 'express';
 //import { ActiveUser } from 'src/common/decorators/active-user.decorator';
 //import { UserActiveInterface } from 'src/common/interfaces/user-active.interface';
@@ -35,10 +35,9 @@ export class AuthController {
     return this.authService.login(loginDto);
   }
 
-  /*@Get('profile')
-  @Auth(Role.USER)
-  profile(@ActiveUser() user: UserActiveInterface) {
-    console.log(user);
-    return this.authService.profile(user);
-  }*/
+  @Auth(Role.ADMIN)
+  @Get('profile')
+  profile(@Req() req: RequestWithUser) {
+    return this.authService.profile(req.user);
+  }
 }
