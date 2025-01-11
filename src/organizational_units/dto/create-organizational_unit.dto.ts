@@ -1,5 +1,5 @@
-import { IsString, IsNotEmpty, IsInt, IsOptional } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsString, IsNotEmpty, IsInt } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateOrganizationalUnitDto {
   @IsString()
@@ -11,13 +11,13 @@ export class CreateOrganizationalUnitDto {
   })
   name: string;
 
-  @IsOptional()
-  @ApiPropertyOptional({
+  @IsNotEmpty()
+  @ApiProperty({
     type: Array<number>,
     description: "Associated users id's",
-    required: false,
+    required: true,
   })
-  users?: Array<number>;
+  users: Array<number>;
 
   @IsInt()
   @ApiProperty({

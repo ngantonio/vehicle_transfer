@@ -9,7 +9,7 @@ import { OrganizationalUnit } from './entities/organizational_unit.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Project } from '../projects/entities/project.entity';
-import { User } from '../entity/User';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class OrganizationalUnitsService {
@@ -57,7 +57,12 @@ export class OrganizationalUnitsService {
   }
 
   async findAll() {
-    return await this.OURepository.find();
+    return await this.OURepository.find({
+      relations: {
+        users: true,
+        project: true,
+      },
+    });
   }
 
   async findOne(id: number) {

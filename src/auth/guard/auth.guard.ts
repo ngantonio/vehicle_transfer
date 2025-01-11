@@ -31,7 +31,7 @@ export class AuthGuard implements CanActivate {
 
       const permissions = await this.rolesService.findOneByName(payload.role);
       request.user = payload;
-      request.permissions = permissions[0].permissions;
+      request.permissions = permissions[0].permissions || [];
     } catch {
       throw new UnauthorizedException();
     }

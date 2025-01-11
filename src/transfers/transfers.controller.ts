@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { TransfersService } from './transfers.service';
 import { CreateTransferDto } from './dto/create-transfer.dto';
@@ -24,38 +25,39 @@ export class TransfersController {
   @RequiresPermission(TransferModulePermissions.edit_transfers)
   @UseGuards(PermissionsGuard)
   @Post()
-  create(@Body() createTransferDto: CreateTransferDto) {
-    return this.transfersService.create(createTransferDto);
+  create(@Req() req, @Body() createTransferDto: CreateTransferDto) {
+    return this.transfersService.create(req.user.id, createTransferDto);
   }
 
   @RequiresPermission(TransferModulePermissions.view_transfers)
   @UseGuards(PermissionsGuard)
   @Get()
-  findAll() {
-    return this.transfersService.findAll();
+  findAll(@Req() req) {
+    return this.transfersService.findAll(req.user.id);
   }
 
   @RequiresPermission(TransferModulePermissions.view_transfers)
   @UseGuards(PermissionsGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.transfersService.findOne(+id);
+  findOne(@Req() req, @Param('id') id: string) {
+    return this.transfersService.findOne(req.user.id, +id);
   }
 
   @RequiresPermission(TransferModulePermissions.edit_transfers)
   @UseGuards(PermissionsGuard)
   @Patch(':id')
   update(
+    @Req() req,
     @Param('id') id: string,
     @Body() updateTransferDto: UpdateTransferDto,
   ) {
-    return this.transfersService.update(+id, updateTransferDto);
+    return this.transfersService.update(req.user.id, +id, updateTransferDto);
   }
 
   @RequiresPermission(TransferModulePermissions.delete_transfer)
   @UseGuards(PermissionsGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.transfersService.remove(+id);
+  remove(@Req() req, @Param('id') id: string) {
+    return this.transfersService.remove(req.user.id, +id);
   }
 }

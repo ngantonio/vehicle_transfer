@@ -10,10 +10,10 @@ export class Vehicle {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: true, length: 50 })
+  @Column({ length: 50 })
   plate: string;
 
-  @Column({ nullable: true, length: 50 })
+  @Column({ length: 50 })
   service: string;
 
   @CreateDateColumn()

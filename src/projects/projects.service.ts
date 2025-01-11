@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { OrganizationalUnit } from '../organizational_units/entities/organizational_unit.entity';
 import { Project } from './entities/project.entity';
 import { Repository } from 'typeorm';
-import { User } from '../entity/User';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class ProjectsService {
@@ -27,12 +27,12 @@ export class ProjectsService {
     if (users) {
       const verified_users = [];
       for (let i = 0; i < users.length; i++) {
-        const user = await this.userRepository.findOne({
+        const userExists = await this.userRepository.findOne({
           where: {
             id: users[i],
           },
         });
-        if (user) verified_users.push(user);
+        if (userExists) verified_users.push(userExists);
       }
       project.users = verified_users;
     }
@@ -54,7 +54,12 @@ export class ProjectsService {
   }
 
   async findAll() {
-    return await this.projectRepository.find();
+    return await this.projectRepository.find({
+      relations: {
+        users: true,
+        organizational_units: true,
+      },
+    });
   }
 
   async findOne(id: number) {

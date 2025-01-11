@@ -12,7 +12,7 @@ import { RolesModule } from '../roles/roles.module';
     JwtModule.register({
       global: true,
       secret: 'secret',
-      signOptions: { expiresIn: '1d' },
+      signOptions: { expiresIn: '10m' },
     }),
   ],
   controllers: [AuthController],
