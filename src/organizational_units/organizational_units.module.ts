@@ -16,5 +16,6 @@ import { RolesModule } from '../roles/roles.module';
   ],
   controllers: [OrganizationalUnitsController],
   providers: [OrganizationalUnitsService],
+  exports: [OrganizationalUnitsService],
 })
 export class OrganizationalUnitsModule {}

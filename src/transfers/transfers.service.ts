@@ -8,32 +8,101 @@ import {
 import { CreateTransferDto } from './dto/create-transfer.dto';
 import { UpdateTransferDto } from './dto/update-transfer.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { OrganizationalUnit } from '../organizational_units/entities/organizational_unit.entity';
-import { ArrayContains, In, Repository } from 'typeorm';
-import { User } from '../users/entities/user.entity';
-import { Project } from '../projects/entities/project.entity';
-import { Vehicle } from '../vehicles/entities/vehicle.entity';
+import { In, Repository } from 'typeorm';
 import { Transfer } from './entities/transfer.entity';
 import { UsersService } from '../users/users.service';
+import { OrganizationalUnitsService } from '../organizational_units/organizational_units.service';
+import { ProjectsService } from '../projects/projects.service';
+import { VehiclesService } from '../vehicles/vehicles.service';
 
 @Injectable()
 export class TransfersService {
   constructor(
-    @InjectRepository(OrganizationalUnit)
-    private readonly OURepository: Repository<OrganizationalUnit>,
-    @InjectRepository(Project)
-    private readonly projectRepository: Repository<Project>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-    @InjectRepository(Vehicle)
-    private readonly vehicleRepository: Repository<Vehicle>,
     @InjectRepository(Transfer)
     private readonly transferRepository: Repository<Transfer>,
     private readonly usersService: UsersService,
+    private readonly projectService: ProjectsService,
+    private readonly organizationalUnitService: OrganizationalUnitsService,
+    private readonly vehiclesService: VehiclesService,
   ) {}
   async create(userId: number, createTransferDto: CreateTransferDto) {
     try {
-      return await this._validateTransferData(userId, createTransferDto);
+      const {
+        type,
+        vehicle,
+        client,
+        transmitter,
+        project,
+        organizational_unit,
+      } = createTransferDto;
+
+      const clientExists = await this.usersService.findOne(client);
+      if (!clientExists)
+        throw new BadRequestException(
+          'Client must be a registered user of the platform',
+        );
+
+      const transmitterExists = await this.usersService.findOne(transmitter);
+      if (!transmitterExists)
+        throw new BadRequestException(
+          'Transmitter must be a registered user of the platform',
+        );
+
+      const OUExists =
+        await this.organizationalUnitService.findOne(organizational_unit);
+      if (!OUExists)
+        throw new BadRequestException(
+          'The specified organizational unit does not exist',
+        );
+
+      const vehicleExists = await this.vehiclesService.findOne(vehicle);
+      if (!vehicleExists)
+        throw new BadRequestException(
+          'Vehicle must be a registered user of the platform',
+        );
+
+      const projectExists = await this.projectService.findOne(project);
+      if (!projectExists)
+        throw new BadRequestException(
+          'Project must be a registered user of the platform',
+        );
+
+      const userBelongsToProject = projectExists.users.find(
+        (u) => u.id === userId,
+      );
+
+      if (!userBelongsToProject) {
+        throw new UnauthorizedException(
+          'The specified user does not have access to the specified project',
+        );
+      }
+
+      const OUbelongsToProject = projectExists.organizational_units.find(
+        (o) => o.id === organizational_unit,
+      );
+      if (!OUbelongsToProject) {
+        throw new BadRequestException(
+          'The requested project does not belong to the requested organizational unit',
+        );
+      }
+
+      const userbelongsToOU = OUExists.users.find((u) => u.id === userId);
+      if (!userbelongsToOU) {
+        throw new BadRequestException(
+          'The specified user does not have access to the specified organizational unit',
+        );
+      }
+
+      const transfer = new Transfer();
+      transfer.client = clientExists;
+      transfer.type = type;
+      transfer.transmitter = transmitterExists;
+      transfer.vehicle = vehicleExists;
+      transfer.organizational_unit = OUExists;
+      transfer.project = projectExists;
+
+      const newTransfer = await this.transferRepository.save(transfer);
+      return newTransfer;
     } catch (error) {
       return error;
     }
@@ -91,38 +160,20 @@ export class TransfersService {
         'Transmitter must be a registered user of the platform',
       );
 
-    const OUExists = await this.OURepository.findOne({
-      relations: {
-        users: true,
-      },
-      where: {
-        id: organizational_unit,
-      },
-    });
+    const OUExists =
+      await this.organizationalUnitService.findOne(organizational_unit);
     if (!OUExists)
       throw new BadRequestException(
         'The specified organizational unit does not exist',
       );
 
-    const vehicleExists = await this.vehicleRepository.findOne({
-      where: {
-        id: vehicle,
-      },
-    });
+    const vehicleExists = await this.vehiclesService.findOne(vehicle);
     if (!vehicleExists)
       throw new BadRequestException(
         'Vehicle must be a registered user of the platform',
       );
 
-    const projectExists = await this.projectRepository.findOne({
-      relations: {
-        users: true,
-        organizational_units: true,
-      },
-      where: {
-        id: project,
-      },
-    });
+    const projectExists = await this.projectService.findOne(project);
     if (!projectExists)
       throw new BadRequestException(
         'Project must be a registered user of the platform',
@@ -168,7 +219,7 @@ export class TransfersService {
   async remove(userId: number, transferId: number) {
     const user = await this.usersService.findOne(userId);
 
-    const transfer = await this.transferRepository.find({
+    const transfer = await this.transferRepository.findOne({
       relations: {
         project: true,
         organizational_unit: true,
@@ -181,109 +232,7 @@ export class TransfersService {
       },
     });
 
-    if (!transfer) throw new NotFoundException('Transfer not found');
-    return await this.transferRepository.remove(transfer);
-  }
-
-  async _validateTransferData(
-    userId: number,
-    createTransferDto: CreateTransferDto,
-  ) {
-    const { type, vehicle, client, transmitter, project, organizational_unit } =
-      createTransferDto;
-
-    const clientExists = await this.userRepository.findOne({
-      where: {
-        id: client,
-      },
-    });
-    if (!clientExists)
-      throw new BadRequestException(
-        'Client must be a registered user of the platform',
-      );
-
-    const transmitterExists = await this.userRepository.findOne({
-      where: {
-        id: transmitter,
-      },
-    });
-    if (!transmitterExists)
-      throw new BadRequestException(
-        'Transmitter must be a registered user of the platform',
-      );
-
-    const OUExists = await this.OURepository.findOne({
-      relations: {
-        users: true,
-      },
-      where: {
-        id: organizational_unit,
-      },
-    });
-    if (!OUExists)
-      throw new BadRequestException(
-        'The specified organizational unit does not exist',
-      );
-
-    const vehicleExists = await this.vehicleRepository.findOne({
-      where: {
-        id: vehicle,
-      },
-    });
-    if (!vehicleExists)
-      throw new BadRequestException(
-        'Vehicle must be a registered user of the platform',
-      );
-
-    const projectExists = await this.projectRepository.findOne({
-      relations: {
-        users: true,
-        organizational_units: true,
-      },
-      where: {
-        id: project,
-      },
-    });
-    if (!projectExists)
-      throw new BadRequestException(
-        'Project must be a registered user of the platform',
-      );
-
-    const userBelongsToProject = projectExists.users.find(
-      (u) => u.id === userId,
-    );
-
-    if (!userBelongsToProject) {
-      throw new UnauthorizedException(
-        'The specified user does not have access to the specified project',
-      );
-    }
-
-    const OUbelongsToProject = projectExists.organizational_units.find(
-      (o) => o.id === organizational_unit,
-    );
-    if (!OUbelongsToProject) {
-      throw new BadRequestException(
-        'The requested project does not belong to the requested organizational unit',
-      );
-    }
-
-    const userbelongsToOU = OUExists.users.find((u) => u.id === userId);
-    if (!userbelongsToOU) {
-      throw new BadRequestException(
-        'The specified user does not have access to the specified organizational unit',
-      );
-    }
-
-    const transfer = new Transfer();
-    transfer.client = clientExists;
-    transfer.type = type;
-    transfer.transmitter = transmitterExists;
-    transfer.vehicle = vehicleExists;
-    transfer.organizational_unit = OUExists;
-    transfer.project = projectExists;
-
-    const newTransfer = await this.transferRepository.save(transfer);
-    return newTransfer;
+    if (!transfer) throw new UnauthorizedException('Transfer not found');
+    return transfer;
   }
 }

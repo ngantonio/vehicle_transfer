@@ -11,12 +11,11 @@ export class RolesService {
   constructor(
     @InjectRepository(Role)
     private readonly roleRepository: Repository<Role>,
-
     @InjectRepository(Permission)
     private readonly permissionRepository: Repository<Permission>,
   ) {}
   async create(createRoleDto: CreateRoleDto) {
-    const { name, description, permissions } = createRoleDto;
+    const { name, description, permissions, permission_ids } = createRoleDto;
 
     try {
       const roleExists = await this.roleRepository.findOne({
@@ -27,26 +26,40 @@ export class RolesService {
         throw new BadRequestException('Role already registered.');
       }
 
-      const permissionIds = [];
-      for (let i = 0; i < permissions.length; i++) {
-        const newPermission = this.permissionRepository.create(permissions[i]);
-        const perm = await this.permissionRepository.save(newPermission);
-        permissionIds.push(perm.id);
+      if (permissions && permission_ids) {
+        throw new BadRequestException('Bad request.');
       }
 
       const role = new Role();
       role.name = name;
       role.description = description;
-      role.permissions = await this.permissionRepository.find({
-        where: { id: In(permissionIds) },
-      });
+
+      if (permissions) {
+        const permissionIds = [];
+        for (let i = 0; i < permissions.length; i++) {
+          const newPermission = this.permissionRepository.create(
+            permissions[i],
+          );
+          const perm = await this.permissionRepository.save(newPermission);
+          permissionIds.push(perm.id);
+        }
+
+        role.permissions = await this.permissionRepository.find({
+          where: { id: In(permissionIds) },
+        });
+      }
+
+      if (permission_ids) {
+        role.permissions = await this.permissionRepository.find({
+          where: { id: In(permission_ids) },
+        });
+      }
 
       const newRole = await this.roleRepository.save(role);
 
       return { message: 'Role created', newRole };
     } catch (error) {
-      console.log(error);
-      return new HttpException(error, 500);
+      return error;
     }
   }
 
@@ -71,9 +84,54 @@ export class RolesService {
   }
 
   async update(id: number, updateRoleDto: UpdateRoleDto) {
-    const role = await this.findOne(id);
-    const updatedRole = Object.assign(role, updateRoleDto);
-    return await this.roleRepository.save(updatedRole);
+    console.log('entra');
+    const { name, description, permissions, permission_ids } = updateRoleDto;
+
+    try {
+      const roleExists = await this.roleRepository.findOne({
+        where: { id: id },
+      });
+
+      if (!roleExists) {
+        throw new BadRequestException('Role not found.');
+      }
+
+      if (permissions && permission_ids) {
+        throw new BadRequestException('Bad request.');
+      }
+
+      roleExists.name = name;
+      roleExists.description = description;
+
+      if (permissions) {
+        const permissionIds = [];
+        for (let i = 0; i < permissions.length; i++) {
+          const newPermission = this.permissionRepository.create(
+            permissions[i],
+          );
+          const perm = await this.permissionRepository.save(newPermission);
+          permissionIds.push(perm.id);
+        }
+
+        roleExists.permissions = await this.permissionRepository.find({
+          where: { id: In(permissionIds) },
+        });
+      }
+
+      if (permission_ids) {
+        roleExists.permissions = await this.permissionRepository.find({
+          where: { id: In(permission_ids) },
+        });
+      }
+
+      console.log('sdsds', roleExists);
+      const newRole = await this.roleRepository.save(roleExists);
+
+      return { message: 'Role updated', newRole };
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
   }
 
   async remove(id: number) {

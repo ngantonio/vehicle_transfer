@@ -12,8 +12,10 @@ import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { Role } from '../utils/enums';
+import { ApiTags } from '@nestjs/swagger';
 
-//@Auth(Role.ADMIN)
+@Auth(Role.ADMIN)
+@ApiTags('Projects')
 @Controller('projects')
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}

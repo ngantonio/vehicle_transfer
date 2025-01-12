@@ -16,8 +16,10 @@ import { RequiresPermission } from '../auth/decorators/permissions.decorator';
 import { Role, TransferModulePermissions } from '../utils/enums';
 import { PermissionsGuard } from '../auth/guard/permissions.guard';
 import { Auth } from '../auth/decorators/auth.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
 @Auth(Role.ADMIN)
+@ApiTags('Transfers')
 @Controller('transfers')
 export class TransfersController {
   constructor(private readonly transfersService: TransfersService) {}

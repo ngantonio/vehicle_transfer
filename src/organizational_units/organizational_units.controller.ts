@@ -12,8 +12,10 @@ import { CreateOrganizationalUnitDto } from './dto/create-organizational_unit.dt
 import { UpdateOrganizationalUnitDto } from './dto/update-organizational_unit.dto';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { Role } from '../utils/enums';
+import { ApiTags } from '@nestjs/swagger';
 
-//@Auth(Role.ADMIN)
+@ApiTags('Organizational-Units')
+@Auth(Role.ADMIN)
 @Controller('organizational-units')
 export class OrganizationalUnitsController {
   constructor(

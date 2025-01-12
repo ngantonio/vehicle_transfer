@@ -4,21 +4,19 @@ import { TransfersController } from './transfers.controller';
 import { Transfer } from './entities/transfer.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RolesModule } from '../roles/roles.module';
-import { Project } from '../projects/entities/project.entity';
-import { OrganizationalUnit } from '../organizational_units/entities/organizational_unit.entity';
-import { User } from '../users/entities/user.entity';
-import { Vehicle } from '../vehicles/entities/vehicle.entity';
 import { UsersModule } from '../users/users.module';
+import { OrganizationalUnitsModule } from '../organizational_units/organizational_units.module';
+import { VehiclesModule } from '../vehicles/vehicles.module';
+import { ProjectsModule } from '../projects/projects.module';
 
 @Module({
   imports: [
     UsersModule,
+    OrganizationalUnitsModule,
+    VehiclesModule,
+    ProjectsModule,
     RolesModule,
     TypeOrmModule.forFeature([Transfer]),
-    TypeOrmModule.forFeature([Project]),
-    TypeOrmModule.forFeature([OrganizationalUnit]),
-    TypeOrmModule.forFeature([User]),
-    TypeOrmModule.forFeature([Vehicle]),
   ],
   controllers: [TransfersController],
   providers: [TransfersService],

@@ -41,13 +41,10 @@ export class UsersService {
         select: {
           id: true,
           name: true,
-          permissions: {
-            name: true,
-          },
         },
       });
 
-      if (!roleExists) {
+      if (roleExists.length == 0) {
         throw new BadRequestException(
           'There is no role registered with that id',
         );

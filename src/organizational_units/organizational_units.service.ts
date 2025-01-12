@@ -67,6 +67,9 @@ export class OrganizationalUnitsService {
 
   async findOne(id: number) {
     const ou = await this.OURepository.findOne({
+      relations: {
+        users: true,
+      },
       where: { id: id },
     });
 

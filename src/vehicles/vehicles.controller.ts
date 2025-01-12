@@ -10,12 +10,17 @@ import {
 import { VehiclesService } from './vehicles.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
+import { Auth } from '../auth/decorators/auth.decorator';
+import { Role } from '../utils/enums';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Vehicles')
+@Auth(Role.ADMIN)
 @Controller('vehicles')
 export class VehiclesController {
   constructor(private readonly vehiclesService: VehiclesService) {}
 
-  @Post()
+  @Post('vehicles')
   create(@Body() createVehicleDto: CreateVehicleDto) {
     return this.vehiclesService.create(createVehicleDto);
   }

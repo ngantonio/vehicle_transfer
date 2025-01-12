@@ -1,10 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsString,
   IsNotEmpty,
   IsOptional,
   IsEnum,
   ValidateNested,
+  IsArray,
 } from 'class-validator';
 import { Role } from '../../utils/enums';
 import { CreatePermissionDto } from '../../permissions/dto/create-permission.dto';
@@ -40,4 +41,12 @@ export class CreateRoleDto {
     required: true,
   })
   permissions?: Array<CreatePermissionDto>;
+
+  @IsArray()
+  @ApiPropertyOptional({
+    type: Array<number>,
+    description: "Associated permissions id's",
+    required: false,
+  })
+  permission_ids: Array<number>;
 }
