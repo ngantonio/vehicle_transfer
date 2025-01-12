@@ -1,2 +1,3 @@
-npm run migration:generate
-node build/src/main.js
+docker compose up -d
+npm install
+npm run start:dev
