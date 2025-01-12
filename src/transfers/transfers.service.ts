@@ -111,6 +111,8 @@ export class TransfersService {
   async findAll(userId: number) {
     const user = await this.usersService.findOne(userId);
 
+    console.log(user);
+
     const transfers = await this.transferRepository.find({
       relations: {
         project: true,
@@ -137,6 +139,7 @@ export class TransfersService {
     id: number,
     updateTransferDto: UpdateTransferDto,
   ) {
+    console.log('llega');
     const { type, vehicle, client, transmitter, project, organizational_unit } =
       updateTransferDto;
 
@@ -213,7 +216,10 @@ export class TransfersService {
     transfer.project = projectExists;
 
     const EditedTransfer = await this.transferRepository.save(transfer);
-    return EditedTransfer;
+    return {
+      message: 'Transfer Edited',
+      transfer: EditedTransfer,
+    };
   }
 
   async remove(userId: number, transferId: number) {
@@ -232,7 +238,7 @@ export class TransfersService {
       },
     });
 
-    if (!transfer) throw new UnauthorizedException('Transfer not found');
+    if (!transfer) throw new UnauthorizedException();
     return transfer;
   }
 }

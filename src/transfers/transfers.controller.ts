@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
+  Put,
 } from '@nestjs/common';
 import { TransfersService } from './transfers.service';
 import { CreateTransferDto } from './dto/create-transfer.dto';
@@ -47,7 +48,7 @@ export class TransfersController {
 
   @RequiresPermission(TransferModulePermissions.edit_transfers)
   @UseGuards(PermissionsGuard)
-  @Patch(':id')
+  @Put(':id')
   update(
     @Req() req,
     @Param('id') id: string,

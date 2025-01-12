@@ -1,0 +1,485 @@
+{
+	"info": {
+		"_postman_id": "068b747e-287a-410a-9150-d3e5076e1791",
+		"name": "Vehicles_api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30345135"
+	},
+	"item": [
+		{
+			"name": "Create role",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"user\",\n    \"description\": \"Platform user\",\n    \"permissions\": [\n        {\n            \"name\": \"view_transfers\",\n            \"description\": \"Can view transfers\"\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/roles",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"roles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update role",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/roles/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"roles",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "register user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"rafael\",\n    \"email\": \"rafael@gmail.com\",\n    \"role_id\": 13,\n    \"password\": \"123456gG\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/auth/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsImVtYWlsIjoib3NjYXJAZ21haWwuY29tIiwidXNlcm5hbWUiOiJvc2NhcmciLCJyb2xlIjoidXNlciIsImlhdCI6MTczNjU1MDIyMSwiZXhwIjoxNzM2NjM2NjIxfQ.YS2LO0-Z8AFIBooQ6B9EumzADkgwORRtkx6UYN-30-k",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"oliveiragabr@outlook.com\",\n    \"password\": \"123456gG\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create project",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiZW1haWwiOiJvbGl2ZWlyYWdhYnJAb3V0bG9vay5jb20iLCJ1c2VybmFtZSI6ImdhYnJpZWxhbnRvbmlvIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzM2NTU0NDEzLCJleHAiOjE3MzY2NDA4MTN9.hOnrtmMsycwNsJ5h-dFSkgcnt9UJoe4IxB_cb8ZbGIk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Proyecto secreto 2\",\n    \"description\": \"Es un proyecto secreto\",\n    \"users\": [9,13]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/projects",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"projects"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create vechicle",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiZW1haWwiOiJvbGl2ZWlyYWdhYnJAb3V0bG9vay5jb20iLCJ1c2VybmFtZSI6ImdhYnJpZWxhbnRvbmlvIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzM2NTU0NDEzLCJleHAiOjE3MzY2NDA4MTN9.hOnrtmMsycwNsJ5h-dFSkgcnt9UJoe4IxB_cb8ZbGIk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"plate\": \"TDH-84U\",\n    \"service\": \"Toyota\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/vehicles",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"vehicles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create organizational unit",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiZW1haWwiOiJvbGl2ZWlyYWdhYnJAb3V0bG9vay5jb20iLCJ1c2VybmFtZSI6ImdhYnJpZWxhbnRvbmlvIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzM2NTU0NDEzLCJleHAiOjE3MzY2NDA4MTN9.hOnrtmMsycwNsJ5h-dFSkgcnt9UJoe4IxB_cb8ZbGIk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Unidad 1\",\n    \"project_id\": 18,\n    \"users\": [9, 11]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/organizational-units",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"organizational-units"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create transfer",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiZW1haWwiOiJvbGl2ZWlyYWdhYnJAb3V0bG9vay5jb20iLCJ1c2VybmFtZSI6ImdhYnJpZWxhbnRvbmlvIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzM2NTU0NDEzLCJleHAiOjE3MzY2NDA4MTN9.hOnrtmMsycwNsJ5h-dFSkgcnt9UJoe4IxB_cb8ZbGIk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/organizational-units",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"organizational-units"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update transfer",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/transfers/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"transfers",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete transfer",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImVtYWlsIjoiYW5hYmVsbGVAZ21haWwuY29tIiwidXNlcm5hbWUiOiJhbm5hYmVsbGUiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzY2MzE0MTMsImV4cCI6MTczNjYzMjAxM30.aMghQhhO8hK5_Mc2uJpRyqz5ttcUutrZ8vZs4lMpn5Q",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/transfers/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"transfers",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get users",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiZW1haWwiOiJvbGl2ZWlyYWdhYnJAb3V0bG9vay5jb20iLCJ1c2VybmFtZSI6ImdhYnJpZWxhbnRvbmlvIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzM2NTU0NDEzLCJleHAiOjE3MzY2NDA4MTN9.hOnrtmMsycwNsJ5h-dFSkgcnt9UJoe4IxB_cb8ZbGIk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all roles",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "get permissions",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Get all organizational units",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Get all projects",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "get user by id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiZW1haWwiOiJvbGl2ZWlyYWdhYnJAb3V0bG9vay5jb20iLCJ1c2VybmFtZSI6ImdhYnJpZWxhbnRvbmlvIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzM2NTU0NDEzLCJleHAiOjE3MzY2NDA4MTN9.hOnrtmMsycwNsJ5h-dFSkgcnt9UJoe4IxB_cb8ZbGIk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/users/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete user",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Get role by id",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Get Profile",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiZW1haWwiOiJvbGl2ZWlyYWdhYnJAb3V0bG9vay5jb20iLCJ1c2VybmFtZSI6ImdhYnJpZWxhbnRvbmlvIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzM2NTM3NTAwLCJleHAiOjE3MzY2MjM5MDB9.Illb03LSWfdseIxXgO1Qfjv8AAVG4ZznKugVxaKa73k",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/auth/profile",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"auth",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Gel all transfers",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImVtYWlsIjoiYW5hYmVsbGVAZ21haWwuY29tIiwidXNlcm5hbWUiOiJhbm5hYmVsbGUiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzY2NjEwMzcsImV4cCI6MTczNjY2MTYzN30.fIK7OkOHAqeQRxc6wpyPnwdtMefpwr_Mo60xm8WYois",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/transfers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"transfers"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

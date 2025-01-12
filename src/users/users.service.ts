@@ -62,7 +62,11 @@ export class UsersService {
   }
 
   async findAll() {
-    return await this.userRepository.find();
+    return await this.userRepository.find({
+      select: {
+        password: false,
+      },
+    });
   }
 
   async findOne(id: number) {
@@ -72,8 +76,12 @@ export class UsersService {
         organizational_units: true,
       },
       where: { id: id },
+      select: {
+        password: false,
+      },
     });
     if (!user) throw new NotFoundException('User not found');
+    delete user.password;
     return user;
   }
 

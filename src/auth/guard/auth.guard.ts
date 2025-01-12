@@ -41,11 +41,11 @@ export class AuthGuard implements CanActivate {
       request.permissions = permissions[0].permissions || [];
 
       /** Se establece la cookie */
-      response.cookie('Authentication', payload, {
+      /*response.cookie('Authentication', payload, {
         secure: true,
         httpOnly: true,
         expires: payload.exp,
-      });
+      });*/
     } catch {
       throw new UnauthorizedException();
     }

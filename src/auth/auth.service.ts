@@ -29,6 +29,7 @@ export class AuthService {
         role: role[0].name,
       };
       const token = await this.jwtService.signAsync(payload);
+      delete user.password;
       return {
         user,
         token,
@@ -60,6 +61,7 @@ export class AuthService {
         role: user.roles[0].name,
       };
       const token = await this.jwtService.signAsync(payload);
+      delete user.password;
 
       return {
         user,
