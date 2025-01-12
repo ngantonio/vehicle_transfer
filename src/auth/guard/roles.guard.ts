@@ -17,6 +17,11 @@ export class RolesGuard implements CanActivate {
       return true;
     }
 
+    /**Se obtiene el objeto usuario autenticado desde el objeto request
+     * y se valida que el rol que se está enviando vía decorador sea
+     * igual al rol del usuario.
+     *
+     */
     const { user } = context.switchToHttp().getRequest();
 
     if (user.role === Role.ADMIN) {

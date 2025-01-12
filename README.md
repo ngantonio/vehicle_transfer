@@ -142,7 +142,8 @@ o bien, si se dese incluir un permiso existente:
     "users": [9,13]
 }
 ```
-* DELETE **http://localhost:3000/projects/id**: Elimina el proyecto almacenado en base de datos que corresponda con el id enviado, si no existe el registro, regresa un 404.
+* DELETE **http://localhost:3000/projects/id**: Elimina el proyecto almacenado en base de datos que corresponda con el id enviado, si no existe el registro, regresa un 404.  
+
 
 
 **ORGANIZATIONAL UNITS**
@@ -197,9 +198,11 @@ o bien, si se dese incluir un permiso existente:
     "service": "Toyota"
 }
 ```
-* DELETE **http://localhost:3000/vehicles/id**: Elimina el vehiculo en base de datos que corresponda con el id enviado, si no existe el registro, regresa un 404.
+* DELETE **http://localhost:3000/vehicles/id**: Elimina el vehiculo en base de datos que corresponda con el id enviado, si no existe el registro, regresa un 404.  
+
   
 
+  
 
 **TRANSFERS**
 
@@ -238,7 +241,11 @@ Se realizan validaciones de existencia del client, transmitter, project, organiz
 
 
 ** Notas: 
-1. Todas las rutas están protegidas por token de autenticación a excepción de /auth/register , /auth/login y el CRUD de roles y permisos
+1. Todas las rutas están protegidas por token de autenticación a excepción de /auth/register , /auth/login y el CRUD de roles y permisos.
+2. Se ha hecho uso de docker para levantar únicamente la base de datos postgresql y se tomaron las previsiones necesarias para crear la base de datos especificada en el archivo .env si no existe y generar las tablas.
+3. Se ha hecho uso de guards para controlar únicamente el acceso a las rutas por token, rol y permisos (en el caso de /transfers). Estos se definen en la carpeta /src/auth.
+4. Para facilitar las pruebas y debido a que estuve lidiando con un error en la construcción del Swagger que no pude resolver, se ha incluido en este repositorio una sencilla colección en Postman.
+5. Se asumió que las restricciones de pertenencia del usuario autenticado con respecto a proyectos y unidades organizativas y de unidades organizativas con respecto a proyectos, podían hacerse como una validación dentro de las mismas rutas de /transfer
 
 
 ## Corriendo la api

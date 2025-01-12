@@ -1,8 +1,6 @@
 import {
   BadRequestException,
-  HttpException,
   Injectable,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateTransferDto } from './dto/create-transfer.dto';
@@ -67,6 +65,7 @@ export class TransfersService {
           'Project must be a registered user of the platform',
         );
 
+      /**Se verifica si el usuario pertenece al proyecto solicitado.*/
       const userBelongsToProject = projectExists.users.find(
         (u) => u.id === userId,
       );
@@ -77,6 +76,7 @@ export class TransfersService {
         );
       }
 
+      /**Se verifica si la unidad organizativa pertenece al proyecto solicitada.*/
       const OUbelongsToProject = projectExists.organizational_units.find(
         (o) => o.id === organizational_unit,
       );
@@ -86,6 +86,7 @@ export class TransfersService {
         );
       }
 
+      /**Se verifica si el usuario pertenece a la unidad organizativa solicitada.*/
       const userbelongsToOU = OUExists.users.find((u) => u.id === userId);
       if (!userbelongsToOU) {
         throw new BadRequestException(
@@ -111,7 +112,10 @@ export class TransfersService {
   async findAll(userId: number) {
     const user = await this.usersService.findOne(userId);
 
-    console.log(user);
+    /**Se obtiene al usuario autenticado y se piden solo aquellas
+    transferencias cuyos proyectos sean los mismos proyectos que 
+    el usuario tiene asociado y cuyas unidades organizativas sean
+    las mismas que el usuario tiene asociadas.*/
 
     const transfers = await this.transferRepository.find({
       relations: {
@@ -139,7 +143,6 @@ export class TransfersService {
     id: number,
     updateTransferDto: UpdateTransferDto,
   ) {
-    console.log('llega');
     const { type, vehicle, client, transmitter, project, organizational_unit } =
       updateTransferDto;
 
@@ -182,16 +185,17 @@ export class TransfersService {
         'Project must be a registered user of the platform',
       );
 
+    /**Se verifica si el usuario pertenece al proyecto solicitado.*/
     const userBelongsToProject = projectExists.users.find(
       (u) => u.id === userId,
     );
-
     if (!userBelongsToProject) {
       throw new UnauthorizedException(
         'The specified user does not have access to the specified project',
       );
     }
 
+    /**Se verifica si la unidad organizativa pertenece al proyecto solicitada.*/
     const OUbelongsToProject = projectExists.organizational_units.find(
       (o) => o.id === organizational_unit,
     );
@@ -201,6 +205,7 @@ export class TransfersService {
       );
     }
 
+    /**Se verifica si el usuario pertenece a la unidad organizativa solicitada.*/
     const userbelongsToOU = OUExists.users.find((u) => u.id === userId);
     if (!userbelongsToOU) {
       throw new BadRequestException(
@@ -225,6 +230,9 @@ export class TransfersService {
   async remove(userId: number, transferId: number) {
     const user = await this.usersService.findOne(userId);
 
+    /**Se elimina la trnasferencia solo si el usuario autenticado pertenece
+     * a la unidad organizativa de la misma
+     */
     const transfer = await this.transferRepository.findOne({
       relations: {
         project: true,
@@ -239,6 +247,9 @@ export class TransfersService {
     });
 
     if (!transfer) throw new UnauthorizedException();
-    return transfer;
+    return {
+      message: 'Transfer deleted',
+      transfer,
+    };
   }
 }

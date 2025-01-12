@@ -18,6 +18,11 @@ export class PermissionsGuard implements CanActivate {
       return false;
     }
 
+    /**Se obtienen los permisos del usuario autenticado desde el objeto request
+     * y se valida que el permiso que se está enviando vía decorador esté
+     * dentro de estos permisos
+     *
+     */
     const { permissions } = context.switchToHttp().getRequest();
     const found = permissions.find((p) => p.name === permission);
     if (found) return true;

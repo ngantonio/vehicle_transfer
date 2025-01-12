@@ -39,13 +39,6 @@ export class AuthGuard implements CanActivate {
       const permissions = await this.rolesService.findOneByName(payload.role);
       request.user = payload;
       request.permissions = permissions[0].permissions || [];
-
-      /** Se establece la cookie */
-      /*response.cookie('Authentication', payload, {
-        secure: true,
-        httpOnly: true,
-        expires: payload.exp,
-      });*/
     } catch {
       throw new UnauthorizedException();
     }
